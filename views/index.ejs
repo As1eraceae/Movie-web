@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Trang Chủ</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <%- include('partials/header', { user: user }) %>
+  
+  <div class="container mt-4">
+    <h1 class="mb-4">Danh sách phim</h1>
+    <div class="row">
+      <% movies.forEach(movie => { %>
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <% if (movie.image) { %>
+              <img src="<%= movie.image %>" class="card-img-top" alt="Poster">
+            <% } else { %>
+              <img src="/images/default.jpg" class="card-img-top" alt="Poster">
+            <% } %>
+            <div class="card-body">
+              <h5 class="card-title">
+                <a href="/movies/<%= movie.id %>"><%= movie.title %></a>
+              </h5>
+              <p class="card-text"><%= movie.description.substring(0, 100) %>...</p>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+  
+  <%- include('partials/footer') %>
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= movie.title %></title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <%- include('partials/header', { user: user }) %>
+  
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-4">
+        <% if (movie.image) { %>
+          <img src="<%= movie.image %>" alt="Poster" class="img-fluid rounded">
+        <% } %>        
+      </div>
+      <div class="col-md-8">
+        <h1><%= movie.title %></h1>
+        <p><%= movie.description %></p>
+        
+        <h3>Chọn giờ chiếu</h3>
+        <form id="bookingForm" action="/booking/<%= movie.id %>" method="POST">
+          <div class="form-group">
+            <label for="showtime">Giờ chiếu:</label>
+            <select name="showtime" id="showtime" class="form-control">
+              <% 
+                let showtimesArray = [];
+                if (movie.showtimes) {
+                  // Nếu movie.showtimes là JSON hoặc chuỗi, chuyển đổi thành mảng
+                  if (typeof movie.showtimes === 'string') {
+                    if (movie.showtimes.trim().startsWith('[')) {
+                      try {
+                        showtimesArray = JSON.parse(movie.showtimes);
+                      } catch (e) {
+                        showtimesArray = movie.showtimes.split(',');
+                      }
+                    } else {
+                      showtimesArray = movie.showtimes.split(',');
+                    }
+                  } else if (Array.isArray(movie.showtimes)) {
+                    showtimesArray = movie.showtimes;
+                  }
+              %>
+              <% } %>
+              <% if (showtimesArray.length > 0) { 
+                   showtimesArray.forEach(showtime => { %>
+                <option value="<%= showtime.trim() %>"><%= showtime.trim() %></option>
+              <% }); } else { %>
+                <option value="">Chưa cập nhật giờ chiếu</option>
+              <% } %>
+            </select>
+          </div>
+          
+          <h3>Chọn ghế ngồi</h3>
+          <div id="seatingChart" class="mb-3"></div>
+          <!-- Input ẩn để lưu ghế được chọn -->
+          <input type="hidden" name="seat" id="selectedSeat" value="">
+          
+          <button type="submit" class="btn btn-primary">Đặt vé</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('partials/footer') %>
+  
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <script>
+    // Script xử lý sơ đồ ghế (ví dụ 5 hàng x 10 ghế/hàng)
+    const movieId = "<%= movie.id %>";
+    const seatingChartDiv = document.getElementById('seatingChart');
+    const showtimeSelect = document.getElementById('showtime');
+    const selectedSeatInput = document.getElementById('selectedSeat');
+    let selectedSeat = null;
+    const rows = ['A', 'B', 'C', 'D', 'E'];
+    const cols = 10;
+
+    function renderSeatingChart(bookedSeats = []) {
+      seatingChartDiv.innerHTML = '';
+      rows.forEach(row => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'seat-row d-flex justify-content-center mb-2';
+        for (let col = 1; col <= cols; col++) {
+          const seatId = row + col;
+          const seatButton = document.createElement('button');
+          seatButton.type = 'button';
+          seatButton.className = 'seat btn btn-outline-secondary m-1';
+          seatButton.textContent = seatId;
+          if (bookedSeats.includes(seatId)) {
+            seatButton.disabled = true;
+            seatButton.classList.add('booked');
+          }
+          if (selectedSeat === seatId) {
+            seatButton.classList.add('selected');
+          }
+          seatButton.addEventListener('click', () => {
+            if (!seatButton.disabled) {
+              const previouslySelected = document.querySelector('.seat.selected');
+              if (previouslySelected) {
+                previouslySelected.classList.remove('selected');
+              }
+              seatButton.classList.add('selected');
+              selectedSeat = seatId;
+              selectedSeatInput.value = seatId;
+            }
+          });
+          rowDiv.appendChild(seatButton);
+        }
+        seatingChartDiv.appendChild(rowDiv);
+      });
+    }
+
+    async function fetchBookedSeats(showtime) {
+      try {
+        const response = await fetch(`/api/booked-seats/${movieId}?showtime=${encodeURIComponent(showtime)}`);
+        if (response.ok) {
+          const data = await response.json();
+          return data.bookedSeats || [];
+        } else {
+          console.error('Failed to fetch booked seats');
+          return [];
+        }
+      } catch (error) {
+        console.error('Error fetching booked seats:', error);
+        return [];
+      }
+    }
+
+    async function updateSeatingChart() {
+      const showtime = showtimeSelect.value;
+      selectedSeat = null;
+      selectedSeatInput.value = '';
+      const bookedSeats = await fetchBookedSeats(showtime);
+      renderSeatingChart(bookedSeats);
+    }
+
+    showtimeSelect.addEventListener('change', updateSeatingChart);
+    window.addEventListener('DOMContentLoaded', updateSeatingChart);
+  </script>
+</body>
+</html>

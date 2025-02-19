@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Đặt Vé Thành Công</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <%- include('partials/header', { user: user }) %>
+  
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-header bg-success text-white">
+        <h3>Đặt Vé Thành Công!</h3>
+      </div>
+      <div class="card-body">
+        <p><strong>Mã đặt vé:</strong> <%= booking.id %></p>
+        <p><strong>Giờ chiếu:</strong> <%= booking.showtime %></p>
+        <p><strong>Ghế:</strong> <%= booking.seat %></p>
+        <hr>
+        <p>Quét mã QR bên dưới để lưu thông tin đặt vé:</p>
+        <img src="<%= qrCodeUrl %>" alt="Mã QR đặt vé" class="img-fluid" style="max-width:300px;">
+      </div>
+      <div class="card-footer text-center">
+        <a href="/" class="btn btn-primary">Trở về Trang Chủ</a>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('partials/footer') %>
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

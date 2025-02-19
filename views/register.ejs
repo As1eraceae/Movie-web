@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng Ký</title>
+  <!-- Bootstrap CSS từ CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <%- include('partials/header', { user: user }) %>
+  
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow">
+          <div class="card-header bg-success text-white">
+            <h3 class="mb-0 text-center">Đăng Ký</h3>
+          </div>
+          <div class="card-body">
+            <form action="/user/register" method="POST">
+              <div class="form-group">
+                <label for="username">Tên đăng nhập:</label>
+                <input type="text" name="username" id="username" class="form-control" placeholder="Nhập tên đăng nhập" required>
+              </div>
+              <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Nhập mật khẩu" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email" class="form-control" placeholder="Nhập email" required>
+              </div>
+              <div class="form-group">
+                <label for="phone">Số điện thoại:</label>
+                <input type="text" name="phone" id="phone" class="form-control" placeholder="Nhập số điện thoại">
+              </div>
+              <button type="submit" class="btn btn-success btn-block">Đăng Ký</button>
+            </form>
+          </div>
+          <div class="card-footer text-center">
+            <small>Đã có tài khoản? <a href="/user/login">Đăng nhập ngay!</a></small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('partials/footer') %>
+  
+  <!-- Bootstrap JS, Popper.js, và jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
