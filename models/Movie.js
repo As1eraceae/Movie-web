@@ -13,16 +13,21 @@ const Movie = sequelize.define('Movie', {
     allowNull: false,
   },
   description: DataTypes.TEXT,
-
+  // Giờ chiếu (có thể lưu dưới dạng JSON hoặc chuỗi)
   showtimes: {
     type: DataTypes.JSON,
     allowNull: true,
   },
-
+  // Lưu đường dẫn ảnh (URL tương đối)
   image: {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  // Thêm cột thể loại phim
+  genre: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
 }, {
   tableName: 'movies',
   timestamps: false,

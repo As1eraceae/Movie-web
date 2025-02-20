@@ -13,10 +13,32 @@
   
   <div class="container mt-4">
     <h1 class="mb-4">Danh sách phim</h1>
+    
+    <!-- Form Tìm Kiếm và Lọc -->
+    <form class="mb-4" method="GET" action="/">
+      <div class="form-row">
+        <div class="col-md-5 mb-2">
+          <input type="text" class="form-control" name="search" placeholder="Tìm kiếm tên phim" value="<%= search %>">
+        </div>
+        <div class="col-md-4 mb-2">
+          <select class="form-control" name="genre">
+            <option value="">Tất cả thể loại</option>
+            <% genreOptions.forEach(function(g) { %>
+              <option value="<%= g %>" <%= genre === g ? 'selected' : '' %>><%= g %></option>
+            <% }); %>
+          </select>
+        </div>
+        <div class="col-md-3 mb-2">
+          <button type="submit" class="btn btn-primary btn-block">Tìm kiếm</button>
+        </div>
+      </div>
+    </form>
+    
+    <!-- Hiển thị danh sách phim dạng card (ví dụ) -->
     <div class="row">
       <% movies.forEach(movie => { %>
         <div class="col-md-4 mb-4">
-          <div class="card h-100">
+          <div class="card h-100 shadow-sm">
             <% if (movie.image) { %>
               <img src="<%= movie.image %>" class="card-img-top" alt="Poster">
             <% } else { %>
@@ -28,6 +50,9 @@
               </h5>
               <p class="card-text"><%= movie.description.substring(0, 100) %>...</p>
             </div>
+            <div class="card-footer">
+              <small class="text-muted">Thể loại: <%= movie.genre || "Chưa cập nhật" %></small>
+            </div>
           </div>
         </div>
       <% }) %>
@@ -35,7 +60,8 @@
   </div>
   
   <%- include('partials/footer') %>
-  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  
+  <!-- Bootstrap JS, Popper.js, và jQuery -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
